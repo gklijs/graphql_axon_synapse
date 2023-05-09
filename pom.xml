@@ -6,7 +6,7 @@
 
     <groupId>io.axoniq.demo</groupId>
     <artifactId>giftcard-demo</artifactId>
-    <version>4.7</version>
+    <version>4.8</version>
     <packaging>jar</packaging>
 
     <name>giftcard-demo</name>
@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.6</version>
+        <version>3.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -25,14 +25,14 @@
 
         <java.version>17</java.version>
 
-        <axon.version>4.7.3</axon.version>
+        <axon.version>4.8.1</axon.version>
 
         <springdoc-openapi-starter.version>2.1.0</springdoc-openapi-starter.version>
 
-        <versions-maven-plugin.version>2.15.0</versions-maven-plugin.version>
+        <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
 
-        <junit.jupiter.version>5.9.2</junit.jupiter.version>
+        <junit.jupiter.version>5.10.0</junit.jupiter.version>
     </properties>
 
     <dependencyManagement>
@@ -103,12 +103,21 @@
         <dependency>
             <groupId>org.axonframework</groupId>
             <artifactId>axon-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo.spring30x</artifactId>
+            <version>4.7.0</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

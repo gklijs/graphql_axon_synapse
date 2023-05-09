@@ -1,22 +1,32 @@
 version: '3.3'
 services:
   axonserver:
-    image: axoniq/axonserver:latest
+    image: axoniq/axonserver:2023.1.1-dev
     hostname: axonserver
     environment:
       - AXONIQ_AXONSERVER_DEVMODE_ENABLED=TRUE
+      - AXONIQ_AXONSERVER_STANDALONE=TRUE
     ports:
       - '8024:8024'
       - '8124:8124'
     networks:
       - giftcard-demo-network
   mongodb:
-    image: bitnami/mongodb:6.0.4
+    image: bitnami/mongodb:6.0.6
     ports:
       - "27017:27017"
     environment:
       - MONGODB_REPLICA_SET_MODE=primary
       - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - giftcard-demo-network
+  synapse:
+    image: axoniq/synapse:0.8.0-nonroot
+    environment:
+      - SERVER_PORT=8081
+      - SYNAPSE_SERVER_LIST=axonserver:8124
+    ports:
+      - "8081:8081"
     networks:
       - giftcard-demo-network
 

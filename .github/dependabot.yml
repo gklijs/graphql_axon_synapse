@@ -12,9 +12,6 @@ updates:
   milestone: 3
   reviewers:
     - "gklijs"
-    - "Morlack"
-    - "saratry"
-    - "smcvb" # Main
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -27,6 +24,3 @@ updates:
   milestone: 3
   reviewers:
     - "gklijs"
-    - "Morlack"
-    - "saratry"
-    - "smcvb" # Main
