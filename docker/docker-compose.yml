@@ -19,6 +19,13 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
       - giftcard-demo-network
+  synapse:
+    build:
+      context: synapse
+    ports:
+      - "8081:8081"
+    networks:
+      - giftcard-demo-network
 
 networks:
   giftcard-demo-network:
