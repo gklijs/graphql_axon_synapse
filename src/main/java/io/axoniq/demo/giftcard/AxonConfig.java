@@ -1,6 +1,5 @@
 package io.axoniq.demo.giftcard;
 
-import com.thoughtworks.xstream.XStream;
 import org.axonframework.common.caching.Cache;
 import org.axonframework.common.caching.WeakReferenceCache;
 import org.axonframework.config.Configurer;
@@ -8,10 +7,8 @@ import org.axonframework.config.ConfigurerModule;
 import org.axonframework.lifecycle.Phase;
 import org.axonframework.messaging.Message;
 import org.axonframework.messaging.interceptors.LoggingInterceptor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class AxonConfig {
@@ -27,7 +24,6 @@ public class AxonConfig {
     }
 
     @Bean
-    @Profile("command")
     public Cache giftCardCache() {
         return new WeakReferenceCache();
     }
@@ -44,7 +40,7 @@ public class AxonConfig {
         }
 
         @Override
-        public void configureModule(@NotNull Configurer configurer) {
+        public void configureModule(Configurer configurer) {
             configurer.eventProcessing(
                               processingConfigurer -> processingConfigurer.registerDefaultHandlerInterceptor(
                                       (config, processorName) -> loggingInterceptor

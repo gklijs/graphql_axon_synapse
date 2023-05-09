@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@Profile("gui")
 @RequestMapping("/giftcard")
 public class GiftCardController {
 

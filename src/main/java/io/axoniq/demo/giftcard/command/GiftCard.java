@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Profile;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
-@Profile("command")
 @Aggregate(cache = "giftCardCache")
 public class GiftCard {
 

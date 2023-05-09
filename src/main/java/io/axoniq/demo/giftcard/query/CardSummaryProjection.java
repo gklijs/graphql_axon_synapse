@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.common.collect.Lists.reverse;
 import static org.springframework.data.domain.Sort.by;
 
-@Profile("query")
 @Service
 @ProcessingGroup("card-summary")
 public class CardSummaryProjection {
