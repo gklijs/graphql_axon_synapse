@@ -1,0 +1,23 @@
+POST http://localhost:8081/v1/contexts/default/commands/io.axoniq.demo.giftcard.api.IssueCardCommand
+Content-Type: application/json
+AxonIQ-PayloadType: io.axoniq.demo.giftcard.api.IssueCardCommand
+AxonIQ-RoutingKey: 10fca0c4-3376-4ca2-a7c2-db2b75c250f3
+
+{
+  "id": "10fca0c4-3376-4ca2-a7c2-db2b75c250f3",
+  "amount": 550
+}
+
+###
+POST http://localhost:8081/v1/contexts/default/handlers/events
+Content-Type: application/json
+
+{
+  "names": [
+    "io.axoniq.demo.giftcard.api.CardIssuedEvent"
+  ],
+  "endpoint": "http://host.docker.internal:3000/events",
+  "endpointType": "http-raw",
+  "clientId": "giftcard-graphql",
+  "componentName": "Giftcard"
+}
