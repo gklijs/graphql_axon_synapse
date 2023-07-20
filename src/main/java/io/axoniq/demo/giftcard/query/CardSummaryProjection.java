@@ -12,6 +12,7 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
