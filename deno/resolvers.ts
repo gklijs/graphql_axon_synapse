@@ -1,45 +1,40 @@
-import {
-    Bson,
-    MongoClient,
-} from "https://deno.land/x/mongo@v0.31.2/mod.ts";
+import {activeCards, allCards, oneCard} from "./projection.ts";
+import {sendCancelCardCommand, sendIssueCardCommand, sendRedeemCardCommand} from "./commands.ts";
 
-const client = new MongoClient();
 
-// Connecting to a Local Database
-await client.connect("mongodb://127.0.0.1:27017");
-
-// Defining schema interface
-interface DinosaurSchema {
-    _id: ObjectId;
-    name: string;
-    description: string;
-}
-
-const db = client.database("test");
-const dinosaurs = db.collection<DinosaurSchema>("dinosaurs");
-
-const allDinosaurs = async () => {
-    return dinosaurs.find({name: {$ne: null}}).toArray()
+const allGiftCards = async () => {
+    return allCards();
 };
 
-const oneDinosaur = async (args: any) => {
-    return dinosaurs.findOne({name: args.name});
+const activeGiftCards = async () => {
+    return activeCards()
 };
 
-const addDinosaur = async (args: any) => {
-    await dinosaurs.insertOne({
-        name: args.name,
-        description: args.description,
-    })
-    return dinosaurs.findOne({name: args.name});
+const oneGiftCard = async (args: any) => {
+    return oneCard(args.cardId)
+};
+
+const issueCard = async (args: any) => {
+    return sendIssueCardCommand(args.cardId, args.initialValue)
+};
+
+const redeemCard = async (args: any) => {
+    return sendRedeemCardCommand(args.cardId, args.value)
+};
+
+const cancelCard = async (args: any) => {
+    return sendCancelCardCommand(args.cardId)
 };
 
 export const resolvers = {
     Query: {
-        allDinosaurs: () => allDinosaurs(),
-        oneDinosaur: (_: any, args: any) => oneDinosaur(args),
+        allGiftCards: () => allGiftCards(),
+        activeGiftCards: () => activeGiftCards(),
+        oneGiftCard: (_: any, args: any) => oneGiftCard(args),
     },
     Mutation: {
-        addDinosaur: (_: any, args: any) => addDinosaur(args),
+        issueCard: (_: any, args: any) => issueCard(args),
+        redeemCard: (_: any, args: any) => redeemCard(args),
+        cancelCard: (_: any, args: any) => cancelCard(args),
     },
 };

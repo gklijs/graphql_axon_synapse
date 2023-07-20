@@ -14,7 +14,9 @@ Content-Type: application/json
 
 {
   "names": [
-    "io.axoniq.demo.giftcard.api.CardIssuedEvent"
+    "io.axoniq.demo.giftcard.api.CardIssuedEvent",
+    "io.axoniq.demo.giftcard.api.CardRedeemedEvent",
+    "io.axoniq.demo.giftcard.api.CardCanceledEvent"
   ],
   "endpoint": "http://host.docker.internal:3000/events",
   "endpointType": "http-raw",

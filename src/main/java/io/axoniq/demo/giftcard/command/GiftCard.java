@@ -20,6 +20,7 @@ public class GiftCard {
     @AggregateIdentifier
     private String giftCardId;
     private int remainingValue;
+    private boolean cancelled;
 
     // Tag this handler to use it as code sample in the documentation
     // tag::IssueCardCommandHandler[]
@@ -36,6 +37,9 @@ public class GiftCard {
     // tag::RedeemCardCommandHandler[]
     @CommandHandler
     public void handle(RedeemCardCommand command) {
+        if (cancelled) {
+            throw new IllegalStateException("card is already cancelled");
+        }
         if (command.amount() <= 0) {
             throw new IllegalArgumentException("amount <= 0");
         }
@@ -49,6 +53,9 @@ public class GiftCard {
     @SuppressWarnings("unused")
     @CommandHandler
     public void handle(CancelCardCommand command) {
+        if (cancelled) {
+            throw new IllegalStateException("card is already cancelled");
+        }
         apply(new CardCanceledEvent(giftCardId));
     }
 
@@ -56,6 +63,7 @@ public class GiftCard {
     public void on(CardIssuedEvent event) {
         giftCardId = event.id();
         remainingValue = event.amount();
+        cancelled = false;
     }
 
     @EventSourcingHandler
@@ -65,7 +73,7 @@ public class GiftCard {
 
     @EventSourcingHandler
     public void on(CardCanceledEvent event) {
-        remainingValue = 0;
+        cancelled = true;
     }
 
     public GiftCard() {

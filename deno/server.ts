@@ -3,6 +3,7 @@ import {GraphQLHTTP} from "https://deno.land/x/gql@1.1.2/mod.ts";
 import {makeExecutableSchema} from "https://deno.land/x/graphql_tools@0.0.2/mod.ts";
 import {resolvers} from "./resolvers.ts";
 import {typeDefs} from "./typedefs.ts";
+import {handleEvent, initProjection} from "./projection.ts";
 
 const schema = makeExecutableSchema({resolvers, typeDefs});
 
@@ -11,9 +12,7 @@ const server = new Server({
         const {pathname} = new URL(req.url);
 
         if (pathname === "/events") {
-            console.log(req)
-            console.log(await req.json())
-            return new Response("Ok", {status: 200})
+            return await handleEvent(req);
         }
 
         return pathname === "/graphql"
@@ -27,3 +26,4 @@ const server = new Server({
 });
 
 server.listenAndServe();
+await initProjection();
