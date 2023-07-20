@@ -8,8 +8,6 @@ on:
       - master
     paths-ignore:
       - 'docs/**'
-      - '.github/workflows/docs.yml'
-
 jobs:
   build:
     name: Test and Build on JDK ${{ matrix.java-version }}
