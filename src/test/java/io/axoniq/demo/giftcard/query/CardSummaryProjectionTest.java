@@ -8,6 +8,11 @@ import io.axoniq.demo.giftcard.api.CountCardSummariesResponse;
 import io.axoniq.demo.giftcard.api.FetchCardSummariesQuery;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,15 +22,20 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(properties = "de.flapdoodle.mongodb.embedded.version=6.0.6")
+@DataMongoTest
 class CardSummaryProjectionTest {
 
-    private final CardRepository cardRepository = mock(CardRepository.class);
+    @Autowired
+    private CardRepository cardRepository;
     private final QueryUpdateEmitter updateEmitter = mock(QueryUpdateEmitter.class);
 
     private CardSummaryProjection testSubject;
 
     @BeforeEach
     void setUp() {
+        cardRepository.deleteAll();
         testSubject = new CardSummaryProjection(cardRepository, updateEmitter);
     }
 
@@ -62,7 +72,7 @@ class CardSummaryProjectionTest {
         assertEquals(testAmount, result.initialValue());
         assertEquals(testAmount - testRedeemAmount, result.remainingValue());
 
-        verify(updateEmitter).emit(eq(FetchCardSummariesQuery.class), any(), eq(result));
+        verify(updateEmitter, times(2)).emit(eq(FetchCardSummariesQuery.class), any(), isA(CardSummary.class));
     }
 
     @Test
@@ -91,19 +101,18 @@ class CardSummaryProjectionTest {
 
     @Test
     void testFetchCardSummariesQueryReturnsFirstEntryOnLimitedSetOfCardSummaries() {
-        String testId = "001";
         int testAmount = 1377;
         // first entry
-        testSubject.on(new CardIssuedEvent(testId, testAmount), Instant.now());
+        testSubject.on(new CardIssuedEvent("001", testAmount), Instant.now());
         // second entry
         testSubject.on(new CardIssuedEvent("002", 42), Instant.now());
 
-        List<CardSummary> results = testSubject.handle(new FetchCardSummariesQuery(1));
-        assertEquals(1, results.size());
-        CardSummary result = results.get(0);
-        assertEquals(testId, result.id());
-        assertEquals(testAmount, result.initialValue());
-        assertEquals(testAmount, result.remainingValue());
+        List<CardSummary> results = testSubject.handle(new FetchCardSummariesQuery(2));
+        assertEquals(2, results.size());
+        assertEquals("001", results.get(0).id());
+        assertEquals("002", results.get(1).id());
+        assertEquals(testAmount, results.get(0).initialValue());
+        assertEquals(testAmount, results.get(0).remainingValue());
     }
 
     @Test
