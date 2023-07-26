@@ -1,8 +1,8 @@
 import {
-  ObjectId,
   MongoClient,
+  ObjectId,
 } from "https://deno.land/x/mongo@v0.31.2/mod.ts";
-import {EventEmitter} from "https://deno.land/x/event@2.0.1/mod.ts";
+import { EventEmitter } from "https://deno.land/x/event@2.0.1/mod.ts";
 
 const client = new MongoClient();
 
@@ -30,33 +30,33 @@ const db = client.database("deno");
 const giftCards = db.collection<GiftCardSchema>("giftcards");
 const axoniqDateTime = "axoniq-datetime";
 const axoniqSequenceNumber = "axoniq-sequencenumber";
-const okResponse = () => new Response("Ok", {status: 200});
+const okResponse = () => new Response("Ok", { status: 200 });
 const issuedEvent = "io.axoniq.demo.giftcard.api.CardIssuedEvent";
 const redeemedEvent = "io.axoniq.demo.giftcard.api.CardRedeemedEvent";
 const cancelledEvent = "io.axoniq.demo.giftcard.api.CardCanceledEvent";
 const cardIdEmitter = new EventEmitter<String>();
 
 export const allCards = async () => {
-  return giftCards.find({cardId: {$ne: null}}).toArray();
+  return giftCards.find({ cardId: { $ne: null } }).toArray();
 };
 
 export const activeCards = async () => {
   return giftCards
-      .find({
-        cardId: {$ne: null},
-        remainingValue: {$ne: 0},
-        canceled: false,
-      })
-      .toArray();
+    .find({
+      cardId: { $ne: null },
+      remainingValue: { $ne: 0 },
+      canceled: false,
+    })
+    .toArray();
 };
 
 export const oneCard = async (cardId: String) => {
-  return giftCards.findOne({cardId: cardId});
+  return giftCards.findOne({ cardId: cardId });
 };
 
 export const nextOneCard = async (cardId: String) => {
   await cardIdEmitter.once(cardId);
-  return giftCards.findOne({cardId: cardId});
+  return giftCards.findOne({ cardId: cardId });
 };
 
 const storeGiftCard = async (req: Request) => {
@@ -80,11 +80,11 @@ const redeemGiftCard = async (req: Request) => {
   const sequenceNumber = Number(req.headers.get(axoniqSequenceNumber));
   const payload = await req.json();
   await giftCards.updateOne(
-      {cardId: payload["id"], sequenceNumber: sequenceNumber - 1},
-      {
-        $inc: {remainingValue: -payload["amount"], sequenceNumber: 1},
-        $set: {lastUpdated: date},
-      },
+    { cardId: payload["id"], sequenceNumber: sequenceNumber - 1 },
+    {
+      $inc: { remainingValue: -payload["amount"], sequenceNumber: 1 },
+      $set: { lastUpdated: date },
+    },
   );
   cardIdEmitter.emit(payload["id"]);
   return okResponse();
@@ -95,11 +95,11 @@ const cancelGiftCard = async (req: Request) => {
   const sequenceNumber = Number(req.headers.get(axoniqSequenceNumber));
   const payload = await req.json();
   await giftCards.updateOne(
-      {cardId: payload["id"], sequenceNumber: sequenceNumber - 1},
-      {
-        $inc: {sequenceNumber: 1},
-        $set: {canceled: true, lastUpdated: date},
-      },
+    { cardId: payload["id"], sequenceNumber: sequenceNumber - 1 },
+    {
+      $inc: { sequenceNumber: 1 },
+      $set: { canceled: true, lastUpdated: date },
+    },
   );
   cardIdEmitter.emit(payload["id"]);
   return okResponse();
@@ -114,18 +114,19 @@ export const handleEvent = async (req: Request) => {
     case cancelledEvent:
       return cancelGiftCard(req);
     default:
-      return new Response("Unknown event", {status: 404});
+      return new Response("Unknown event", { status: 404 });
   }
 };
 
+// @ts-ignore
 export const initProjection = async () => {
   giftCards.createIndexes({
-    indexes: [{key: {cardId: 1}, name: "giftcard_cardid", unique: true}],
+    indexes: [{ key: { cardId: 1 }, name: "giftcard_cardid", unique: true }],
   });
   const init = db.collection<InitSchema>("init");
   const currentInit = await init
-      .find({activeEventHandler: {$ne: null}})
-      .next();
+    .find({ activeEventHandler: { $ne: null } })
+    .next();
   console.log("Current initialization state: " + JSON.stringify(currentInit));
   if (currentInit === undefined) {
     console.log("Subscribing to events via Synapse");
@@ -137,12 +138,12 @@ export const initProjection = async () => {
       componentName: "DenoGraphQlEndpoint",
     });
     let reply = await fetch(
-        "http://localhost:8081/v1/contexts/default/handlers/events",
-        {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body,
-        },
+      "http://localhost:8081/v1/contexts/default/handlers/events",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      },
     );
     const activeEventHandler = reply.headers.get("location");
     await init.insertOne({

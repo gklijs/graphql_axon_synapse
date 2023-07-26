@@ -1,5 +1,5 @@
-import {createSchema, createYoga} from "graphql-yoga";
-import {resolvers} from "./resolvers.ts";
+import { createSchema, createYoga } from "graphql-yoga";
+import { resolvers } from "./resolvers.ts";
 
 export const yoga = createYoga({
   schema: createSchema({
