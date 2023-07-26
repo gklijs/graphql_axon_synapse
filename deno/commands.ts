@@ -16,9 +16,9 @@ const sendCommand = async (
     },
   );
   if (reply.status === 200) {
-    return { success: card };
+    return card;
   } else {
-    return { error: await reply.json() };
+    return reply.json();
   }
 };
 

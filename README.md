@@ -268,3 +268,7 @@ By default, these use ports 8024 and 8124 respectively, but you can change these
 The HTTP server has in its root context a management Web GUI, a health indicator is available at `/actuator/health`, and the REST API at `/v1`. 
 The API's Swagger endpoint finally, is available at `/swagger-ui.html`, and gives the documentation on the REST API.
 
+### Deno
+
+run with `deno run --allow-net --allow-read --import-map ./import_map.json server.t` in the deno folder. You need to have Deno installed.
+

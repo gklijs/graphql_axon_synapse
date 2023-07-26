@@ -105,6 +105,10 @@ const cancelGiftCard = async (req: Request) => {
   return okResponse();
 };
 
+export const stream = async function* () {
+  yield { "cardId": "something" };
+};
+
 export const handleEvent = async (req: Request) => {
   switch (req.headers.get("axoniq-eventname")) {
     case issuedEvent:
