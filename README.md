@@ -270,5 +270,5 @@ The API's Swagger endpoint finally, is available at `/swagger-ui.html`, and give
 
 ### Deno
 
-run with `deno run --allow-net --allow-read --import-map ./import_map.json server.t` in the deno folder. You need to have Deno installed.
+run with `deno run --allow-net --allow-read --import-map ./import_map.json server.ts` in the deno folder. You need to have Deno installed.
 

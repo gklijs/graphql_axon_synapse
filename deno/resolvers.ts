@@ -42,6 +42,6 @@ export const resolvers = {
     cancelGiftCard: (_: any, args: any) => cancelCard(args),
   },
   Subscription: {
-    streamGiftCards:{ subscribe: stream},
+    streamGiftCards: { subscribe: stream },
   },
 };
