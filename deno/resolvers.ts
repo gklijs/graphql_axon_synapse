@@ -1,4 +1,10 @@
-import { activeCards, allCards, oneCard, stream } from "./projection.ts";
+import {
+  activeCards,
+  allCards,
+  oneCard,
+  stream,
+  streamOne,
+} from "./projection.ts";
 import {
   sendCancelCardCommand,
   sendIssueCardCommand,
@@ -43,5 +49,6 @@ export const resolvers = {
   },
   Subscription: {
     streamGiftCards: { subscribe: stream },
+    streamGiftCard: { subscribe: (_, { cardId }) => streamOne(cardId) },
   },
 };

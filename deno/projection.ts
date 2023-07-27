@@ -34,7 +34,7 @@ const okResponse = () => new Response("Ok", { status: 200 });
 const issuedEvent = "io.axoniq.demo.giftcard.api.CardIssuedEvent";
 const redeemedEvent = "io.axoniq.demo.giftcard.api.CardRedeemedEvent";
 const cancelledEvent = "io.axoniq.demo.giftcard.api.CardCanceledEvent";
-const cardIdEmitter = new EventEmitter<String>();
+const cardIdEmitter = new EventEmitter<GiftCardSchema>();
 
 export const allCards = async () => {
   return giftCards.find({ cardId: { $ne: null } }).toArray();
@@ -51,19 +51,26 @@ export const activeCards = async () => {
 };
 
 export const oneCard = async (cardId: String) => {
-  return giftCards.findOne({ cardId: cardId });
+  const event = await giftCards.findOne({ cardId: cardId });
+  return event.value;
 };
 
 export const nextOneCard = async (cardId: String) => {
-  await cardIdEmitter.once(cardId);
-  return giftCards.findOne({ cardId: cardId });
+  const [event] = await cardIdEmitter.once(cardId);
+  return event;
+};
+
+const emitUpdatedCard = async (cardId: String) => {
+  const card = await giftCards.findOne({ cardId: cardId });
+  return cardIdEmitter.emit(cardId, card);
 };
 
 const storeGiftCard = async (req: Request) => {
   const date = new Date(req.headers.get(axoniqDateTime));
   const payload = await req.json();
+  const cardId = payload["id"];
   await giftCards.insertOne({
-    cardId: payload["id"],
+    cardId: cardId,
     initialValue: payload["amount"],
     remainingValue: payload["amount"],
     issued: date,
@@ -71,7 +78,7 @@ const storeGiftCard = async (req: Request) => {
     canceled: false,
     sequenceNumber: 0,
   });
-  cardIdEmitter.emit(payload["id"]);
+  await emitUpdatedCard(cardId);
   return okResponse();
 };
 
@@ -79,14 +86,15 @@ const redeemGiftCard = async (req: Request) => {
   const date = new Date(req.headers.get(axoniqDateTime));
   const sequenceNumber = Number(req.headers.get(axoniqSequenceNumber));
   const payload = await req.json();
+  const cardId = payload["id"];
   await giftCards.updateOne(
-    { cardId: payload["id"], sequenceNumber: sequenceNumber - 1 },
+    { cardId: cardId, sequenceNumber: sequenceNumber - 1 },
     {
       $inc: { remainingValue: -payload["amount"], sequenceNumber: 1 },
       $set: { lastUpdated: date },
     },
   );
-  cardIdEmitter.emit(payload["id"]);
+  await emitUpdatedCard(cardId);
   return okResponse();
 };
 
@@ -94,21 +102,27 @@ const cancelGiftCard = async (req: Request) => {
   const date = new Date(req.headers.get(axoniqDateTime));
   const sequenceNumber = Number(req.headers.get(axoniqSequenceNumber));
   const payload = await req.json();
+  const cardId = payload["id"];
   await giftCards.updateOne(
-    { cardId: payload["id"], sequenceNumber: sequenceNumber - 1 },
+    { cardId: cardId, sequenceNumber: sequenceNumber - 1 },
     {
       $inc: { sequenceNumber: 1 },
       $set: { canceled: true, lastUpdated: date },
     },
   );
-  cardIdEmitter.emit(payload["id"]);
+  await emitUpdatedCard(cardId);
   return okResponse();
 };
 
 export const stream = async function* () {
   for await (const event of cardIdEmitter) {
-    const card = await oneCard(event.name);
-    yield { streamGiftCards: card };
+    yield { streamGiftCards: event.value[0] };
+  }
+};
+
+export const streamOne = async function* (cardId: String) {
+  for await (const [card] of cardIdEmitter.on(cardId)) {
+    yield { streamGiftCard: card };
   }
 };
 

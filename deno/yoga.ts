@@ -34,7 +34,7 @@ export const yoga = createYoga({
       }
       type Subscription {
         streamGiftCards: GiftCard!
-        countdown(from: Int!): Int!
+        streamGiftCard(cardId: String!): GiftCard!
       }
     `,
     resolvers: resolvers,
