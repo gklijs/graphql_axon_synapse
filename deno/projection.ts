@@ -106,8 +106,11 @@ const cancelGiftCard = async (req: Request) => {
 };
 
 export const stream = async function* () {
-  yield { "cardId": "something" };
-};
+  for await (const event of cardIdEmitter) {
+    const card = await oneCard(event.name);
+    yield {streamGiftCards: card }
+  }
+}
 
 export const handleEvent = async (req: Request) => {
   switch (req.headers.get("axoniq-eventname")) {

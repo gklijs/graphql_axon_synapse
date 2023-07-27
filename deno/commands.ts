@@ -2,7 +2,7 @@ import { nextOneCard } from "./projection.ts";
 
 const sendCommand = async (
   cardId: String,
-  payload: JSON,
+  payload: Object,
   commandName: String,
 ) => {
   const card = nextOneCard(cardId);
@@ -26,7 +26,7 @@ export const sendIssueCardCommand = async (
   cardId: String,
   initialValue: number,
 ) => {
-  const payload = <JSON> <unknown> {
+  const payload = {
     id: cardId,
     amount: initialValue,
   };
@@ -38,7 +38,7 @@ export const sendIssueCardCommand = async (
 };
 
 export const sendRedeemCardCommand = async (cardId: String, value: number) => {
-  const payload = <JSON> <unknown> {
+  const payload = {
     id: cardId,
     amount: value,
   };
@@ -50,7 +50,7 @@ export const sendRedeemCardCommand = async (cardId: String, value: number) => {
 };
 
 export const sendCancelCardCommand = async (cardId: String) => {
-  const payload = <JSON> <unknown> {
+  const payload = {
     id: cardId,
   };
   return sendCommand(

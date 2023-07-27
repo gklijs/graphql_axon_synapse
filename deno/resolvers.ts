@@ -5,14 +5,6 @@ import {
   sendRedeemCardCommand,
 } from "./commands.ts";
 
-const allGiftCards = async () => {
-  return allCards();
-};
-
-const activeGiftCards = async () => {
-  return activeCards();
-};
-
 const oneGiftCard = async (args: any) => {
   return oneCard(args.cardId);
 };
@@ -29,10 +21,6 @@ const cancelCard = async (args: any) => {
   return sendCancelCardCommand(args.cardId);
 };
 
-const streamCards = async () => {
-  return stream;
-};
-
 export const resolvers = {
   CommandResult: {
     __resolveType(obj, contextValue, info) {
@@ -44,8 +32,8 @@ export const resolvers = {
     },
   },
   Query: {
-    allGiftCards: () => allGiftCards(),
-    activeGiftCards: () => activeGiftCards(),
+    allGiftCards: () => allCards(),
+    activeGiftCards: () => activeCards(),
     oneGiftCard: (_: any, args: any) => oneGiftCard(args),
   },
   Mutation: {
@@ -54,6 +42,6 @@ export const resolvers = {
     cancelGiftCard: (_: any, args: any) => cancelCard(args),
   },
   Subscription: {
-    streamGiftCards: () => streamCards(),
+    streamGiftCards:{ subscribe: stream},
   },
 };
