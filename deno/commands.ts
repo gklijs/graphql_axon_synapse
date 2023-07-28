@@ -1,9 +1,9 @@
 import { nextOneCard } from "./projection.ts";
 
 const sendCommand = async (
-  cardId: String,
+  cardId: string,
   payload: Object,
-  commandName: String,
+  commandName: string,
 ) => {
   const card = fetchNextCard(cardId, 2000);
   const body = JSON.stringify(payload);
@@ -11,7 +11,10 @@ const sendCommand = async (
     "http://localhost:8081/v1/contexts/default/commands/" + commandName,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "AxonIQ-RoutingKey": cardId,
+      },
       body,
     },
   );
@@ -22,7 +25,7 @@ const sendCommand = async (
   }
 };
 
-const fetchNextCard = async (cardId: String, timeout: number) => {
+const fetchNextCard = async (cardId: string, timeout: number) => {
   const timer = new Promise((resolve) => {
     setTimeout(resolve, timeout, { reason: "Timed out waiting for event." });
   });
@@ -30,7 +33,7 @@ const fetchNextCard = async (cardId: String, timeout: number) => {
 };
 
 export const sendIssueCardCommand = async (
-  cardId: String,
+  cardId: string,
   initialValue: number,
 ) => {
   const payload = {
@@ -44,7 +47,7 @@ export const sendIssueCardCommand = async (
   );
 };
 
-export const sendRedeemCardCommand = async (cardId: String, value: number) => {
+export const sendRedeemCardCommand = async (cardId: string, value: number) => {
   const payload = {
     id: cardId,
     amount: value,
@@ -56,7 +59,7 @@ export const sendRedeemCardCommand = async (cardId: String, value: number) => {
   );
 };
 
-export const sendCancelCardCommand = async (cardId: String) => {
+export const sendCancelCardCommand = async (cardId: string) => {
   const payload = {
     id: cardId,
   };
