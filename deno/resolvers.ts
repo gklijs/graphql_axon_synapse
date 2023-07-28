@@ -33,8 +33,11 @@ export const resolvers = {
       // Only GiftCard has a cardId field
       if (obj.cardId) {
         return "GiftCard";
+      } else if (obj.reason) {
+        return "FetchError";
+      } else {
+        return "CommandError";
       }
-      return "CommandError";
     },
   },
   Query: {

@@ -5,7 +5,7 @@ const sendCommand = async (
   payload: Object,
   commandName: String,
 ) => {
-  const card = nextOneCard(cardId);
+  const card = fetchNextCard(cardId, 2000);
   const body = JSON.stringify(payload);
   let reply = await fetch(
     "http://localhost:8081/v1/contexts/default/commands/" + commandName,
@@ -20,6 +20,13 @@ const sendCommand = async (
   } else {
     return reply.json();
   }
+};
+
+const fetchNextCard = async (cardId: String, timeout: number) => {
+  const timer = new Promise((resolve) => {
+    setTimeout(resolve, timeout, { reason: "Timed out waiting for event." });
+  });
+  return Promise.race([timer, nextOneCard(cardId)]);
 };
 
 export const sendIssueCardCommand = async (
