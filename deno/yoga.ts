@@ -31,9 +31,9 @@ export const yoga = createYoga({
         oneGiftCard(cardId: String!): GiftCard
       }
       type Mutation {
-        issueGiftCard(cardId: String!, initialValue: Int!): CommandResult!
-        redeemGiftCard(cardId: String!, value: Int!): CommandResult!
-        cancelGiftCard(cardId: String!): CommandResult!
+        issueGiftCard(cardId: String!, initialValue: Int!, fetchTimeout: Int): CommandResult!
+        redeemGiftCard(cardId: String!, value: Int!, fetchTimeout: Int): CommandResult!
+        cancelGiftCard(cardId: String!, fetchTimeout: Int): CommandResult!
       }
       type Subscription {
         streamGiftCards: GiftCard!

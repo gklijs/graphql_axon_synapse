@@ -4,8 +4,9 @@ const sendCommand = async (
   cardId: string,
   payload: Object,
   commandName: string,
+  timeout: number,
 ) => {
-  const card = fetchNextCard(cardId, 2000);
+  const card = fetchNextCard(cardId, timeout);
   const body = JSON.stringify(payload);
   let reply = await fetch(
     "http://localhost:8081/v1/contexts/default/commands/" + commandName,
@@ -35,6 +36,7 @@ const fetchNextCard = async (cardId: string, timeout: number) => {
 export const sendIssueCardCommand = async (
   cardId: string,
   initialValue: number,
+  timeout: number,
 ) => {
   const payload = {
     id: cardId,
@@ -44,10 +46,15 @@ export const sendIssueCardCommand = async (
     cardId,
     payload,
     "io.axoniq.demo.giftcard.api.IssueCardCommand",
+    timeout,
   );
 };
 
-export const sendRedeemCardCommand = async (cardId: string, value: number) => {
+export const sendRedeemCardCommand = async (
+  cardId: string,
+  value: number,
+  timeout: number,
+) => {
   const payload = {
     id: cardId,
     amount: value,
@@ -56,10 +63,14 @@ export const sendRedeemCardCommand = async (cardId: string, value: number) => {
     cardId,
     payload,
     "io.axoniq.demo.giftcard.api.RedeemCardCommand",
+    timeout,
   );
 };
 
-export const sendCancelCardCommand = async (cardId: string) => {
+export const sendCancelCardCommand = async (
+  cardId: string,
+  timeout: number,
+) => {
   const payload = {
     id: cardId,
   };
@@ -67,5 +78,6 @@ export const sendCancelCardCommand = async (cardId: string) => {
     cardId,
     payload,
     "io.axoniq.demo.giftcard.api.CancelCardCommand",
+    timeout,
   );
 };
