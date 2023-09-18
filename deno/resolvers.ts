@@ -16,15 +16,18 @@ const oneGiftCard = async (args: any) => {
 };
 
 const issueCard = async (args: any) => {
-  return sendIssueCardCommand(args.cardId, args.initialValue);
+  const timeout = args.fetchTimeout == null ? 2000 : args.fetchTimeout;
+  return sendIssueCardCommand(args.cardId, args.initialValue, timeout);
 };
 
 const redeemCard = async (args: any) => {
-  return sendRedeemCardCommand(args.cardId, args.value);
+  const timeout = args.fetchTimeout == null ? 2000 : args.fetchTimeout;
+  return sendRedeemCardCommand(args.cardId, args.value, timeout);
 };
 
 const cancelCard = async (args: any) => {
-  return sendCancelCardCommand(args.cardId);
+  const timeout = args.fetchTimeout == null ? 2000 : args.fetchTimeout;
+  return sendCancelCardCommand(args.cardId, timeout);
 };
 
 export const resolvers = {
@@ -33,8 +36,11 @@ export const resolvers = {
       // Only GiftCard has a cardId field
       if (obj.cardId) {
         return "GiftCard";
+      } else if (obj.reason) {
+        return "FetchError";
+      } else {
+        return "CommandError";
       }
-      return "CommandError";
     },
   },
   Query: {

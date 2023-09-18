@@ -21,16 +21,19 @@ export const yoga = createYoga({
         timestamp: DateTime!
         status: Int!
       }
-      union CommandResult = GiftCard | CommandError
+      type FetchError {
+        reason: String!
+      }
+      union CommandResult = GiftCard | CommandError | FetchError
       type Query {
         allGiftCards: [GiftCard]
         activeGiftCards: [GiftCard]
         oneGiftCard(cardId: String!): GiftCard
       }
       type Mutation {
-        issueGiftCard(cardId: String!, initialValue: Int!): CommandResult
-        redeemGiftCard(cardId: String!, value: Int!): CommandResult
-        cancelGiftCard(cardId: String!): CommandResult
+        issueGiftCard(cardId: String!, initialValue: Int!, fetchTimeout: Int): CommandResult!
+        redeemGiftCard(cardId: String!, value: Int!, fetchTimeout: Int): CommandResult!
+        cancelGiftCard(cardId: String!, fetchTimeout: Int): CommandResult!
       }
       type Subscription {
         streamGiftCards: GiftCard!
