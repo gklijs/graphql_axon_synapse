@@ -12,7 +12,7 @@ services:
     networks:
       - giftcard-demo-network
   mongodb:
-    image: bitnami/mongodb:6.0.6
+    image: bitnami/mongodb:6.0.10
     ports:
       - "27017:27017"
     environment:
