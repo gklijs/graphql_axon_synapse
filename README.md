@@ -1,10 +1,11 @@
-Getting started with Axon
-=========================
+## Demo Application leveraging AxonIQ Synapse to add a GraphQL endpoint
 
-This Axon Framework demo application focuses around a simple giftcard domain, designed to show various aspects of the framework. 
-The app can be run in various modes, using [Spring-boot Profiles](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html): by selecting a specific profile, only the corresponding parts of the app will be active. 
-Select none, and the default behaviour is activated, which activates everything. 
-This way you can experiment with Axon in a (structured) monolith as well as in micro-services.
+### Quickstart
+
+The application contains 3 major parts, you need all of them to be able to execute commands successfully.
+1. Infra components, Axon Server, Axon Synapse and MongoDB. Start with `docker console up -d` in the `docker` folder.
+2. JVM app which handles commands, builds his own projection, and has a basic ui. Run `./mvnw spring-boot:run` in the main folder to start. You do need Java installed.
+3. A Deno app, which has its own projection in MongoDB, Run `deno run --allow-net --allow-read --import-map ./import_map.json server.ts` in the `deno` folder, you do need to have Deno installed.
 
 Where to find more information:
 -------------------------------
