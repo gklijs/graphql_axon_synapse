@@ -1,9 +1,9 @@
-## Demo Application leveraging AxonIQ Synapse to add a GraphQL endpoint
+## Demo Application leveraging Axon Synapse to add a GraphQL endpoint
 
 ### Quickstart
 
 The application contains 3 major parts, you need all of them to be able to execute commands successfully.
-1. Infra components, Axon Server, Axon Synapse and MongoDB. Start with `docker console up -d` in the `docker` folder.
+1. Infra components, Axon Server, Axon Synapse and MongoDB. Start with `docker console up -d` in the `docker` folder. In [projection](deno/projection.ts) we assume the Deno app can be reached via `http://host.docker.internal:3000/events` from Synapse which might not be the case in your docker setup.
 2. JVM app which handles commands, builds his own projection, and has a basic ui. Run `./mvnw spring-boot:run` in the main folder to start. You do need Java installed.
 3. A Deno app, which has its own projection in MongoDB, Run `deno run --allow-net --allow-read --import-map ./import_map.json server.ts` in the `deno` folder, you do need to have Deno installed.
 
