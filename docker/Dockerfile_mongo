@@ -1,0 +1,7 @@
+#Dockerfile
+
+FROM --platform=linux/arm64/v8 mongo:latest
+
+EXPOSE 27017
+
+CMD ["mongod"]
