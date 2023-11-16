@@ -44,7 +44,7 @@ The Giftcard application is split into four parts, using four sub-packages of `i
 
 To build the demo app, simply run the provided [Maven wrapper](https://www.baeldung.com/maven-wrapper):
 
-```
+```shell
 ./mvnw clean package
 ```
 
@@ -54,7 +54,7 @@ Note that the Giftcard app expects JDK 17 to be used.
 
 The simplest way to run the app is by using the Spring-boot maven plugin:
 
-```
+```shell
 ./mvnw spring-boot:run
 ```
 However, if you have copied the jar file `giftcard-demo-1.0.jar` from the Maven `target` directory to some other location, you can also start it with:
@@ -121,5 +121,16 @@ Axon Synapse has its own ui, available at `localhost:8081` when using the docker
 
 ## Deno
 
-run with `deno run --allow-net --allow-read --import-map ./import_map.json server.ts` in the deno folder. You need to have [Deno](https://docs.deno.com/runtime/manual/getting_started/installation) installed.
+You need to have [Deno](https://docs.deno.com/runtime/manual/getting_started/installation) installed. If you are on a mac, you can run:
+```shell
+brew install deno
+```
 
+After that, you can run the deno app with: 
+```shell
+cd deno
+deno run --allow-net --allow-read --import-map ./import_map.json server.ts
+```
+
+## Potential Gotchas
+- [Mongo issues on Apple Silicon](docker/apple_silicon_gotchas.md)
